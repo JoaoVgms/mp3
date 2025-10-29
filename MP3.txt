@@ -1,0 +1,12 @@
+https://iamkate.com/code/binary-file-viewer/
+
+https://teslabs.com/openplayer/docs/docs/specs/mp3_structure.pdf
+
+https://mp3converters.io/pt/youtube-para-mp3/
+
+https://www.datavoyage.com/mpgscript/mpeghdr.htm
+
+https://www.mp3-tech.org/programmer/frame_header.html
+
+https://id3.org/id3v2.4.0-structure
+
