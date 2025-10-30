@@ -1,4 +1,4 @@
-localfile = "C:\\Users\\User\\Desktop\\teste\\Tokyo Reggie.mp3"
+localfile = "Tokyo Reggie.mp3"
 
 with open(localfile, "rb") as arquivo:
     leiturabytes = arquivo.read()
@@ -37,7 +37,9 @@ print(f"Primeiros 100 bytes: {bytearrayarquivo[::]}")
 # print(f"Titulo: {titulo}")
 # counter2 = 0
 
-
+####################################################
+'''
+LÊ AS INFORMAÇÕES PELO HEADER DE CIMA (TRABALHAR NISSO)
 DATACOORD = []
 BIT = 0
 while bytearrayarquivo[BIT] != FRAMESTART: #procura as coordenadas começo e fim dos bytes b'0x0'b'0x0'b'0x0', usados para delimitar informações, até encontrar um bit b'0xFF'.
@@ -54,19 +56,36 @@ print(DATACOORD)
 
 for n in range(LENDATACOORD): 
     print(bytearrayarquivo[DATACOORD[n - 1]:DATACOORD[n]])
-
+'''
+###################################################
+     
 counter = 0
+INFOPLACEHOLDER = ''
+info = []
+titles = ['Título: ', 'Artista: ', 'Álbum: ','Comentário: ', 'Ano: ']
+j = 0
 
-for i in range(128):
-    if bytearrayarquivo[TOTALLENGHT - 128 + i] == 0:
-        if counter == 0:
-            print("\n")
-        counter += 1
+for i in range(125): #Conta os últimos 128 bytes
+    if bytearrayarquivo[TOTALLENGHT - 125 + i] != 0: #Caso qualquer um desses bytes seja diferente de 0...
+        if counter == 0: #identifica se é o primeiro byte do bloco
+            counter += 1 #incrementa o contador em 1 para cada byte encontrado.
+        INFOPLACEHOLDER += chr(bytearrayarquivo[TOTALLENGHT - 125 + i]) #Cria a string de informações com cada byte do bloco de informações.
     else:
-        counter = 0
-        print(chr(bytearrayarquivo[TOTALLENGHT - 128 + i]), end="")
-
-
+        if counter != 0:
+            info.append(INFOPLACEHOLDER) #Adiciona a informação encontrada ao array de controle
+            INFOPLACEHOLDER = '' #Resete a string
+            counter = 0 #reseta a quantidade de bytes encontrados
+        
+for index, data in enumerate(info): #Printa as informações do array de controle.
+    if (index == 4): #Verifica se há um bloco de comentários. Caso não haja, pula o indice 3, que nomeia os comentários.
+        print(titles[index], data, "\n")
+    else:
+        if(index > 2):
+            print(titles[index + 1], data, "\n")
+        else:
+            print(titles[index], data, "\n")
+    
+    
 
 
 
