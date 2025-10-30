@@ -1,21 +1,22 @@
-localfile = "Tokyo Reggie.mp3"
+localfile = "Sayonara Fujisan.mp3"
 
 with open(localfile, "rb") as arquivo:
     leiturabytes = arquivo.read()
     bytearrayarquivo = bytearray(leiturabytes)
 
 
-FRAMESTART = 0xff
 TOTALLENGHT = len(bytearrayarquivo)
 
-  
+# PROCURA INFORMAÇÕES (TÍTULO, AUTOR, ÁLBUM) PELO TAGv1 ==> info(bytearray[arquivo])
 counter = 0
 infoplaceholder = ''
-info = []
+info = [] # FUNÇÃO RETORNA ISSO AQUI
 titles = ['Título: ', 'Artista: ', 'Álbum: ','Comentário: ', 'Ano: ']
 j = 0
 
-for i in range(125): #Conta os últimos 128 bytes
+# No momento, vê a TAGV1. Atualizar algoritmo para TAGV2. TO DO.
+
+for i in range(125): #Conta os últimos 125 bytes
     if bytearrayarquivo[TOTALLENGHT - 125 + i] != 0: #Caso qualquer um desses bytes seja diferente de 0...
         if counter == 0: #identifica se é o primeiro byte do bloco
             counter += 1 #incrementa o contador em 1 para cada byte encontrado.
@@ -23,7 +24,7 @@ for i in range(125): #Conta os últimos 128 bytes
     else:
         if counter != 0:
             info.append(infoplaceholder) #Adiciona a informação encontrada ao array de controle
-            infoplaceholder = '' #Resete a string
+            infoplaceholder = '' #Reseta a string
             counter = 0 #reseta a quantidade de bytes encontrados
         
 for index, data in enumerate(info): #Printa as informações do array de controle.
@@ -34,33 +35,43 @@ for index, data in enumerate(info): #Printa as informações do array de control
             print(titles[index + 1], data, "\n")
         else:
             print(titles[index], data, "\n")
-   
-# PROCURANDO OS HEADERS DOS FRAMES: 
-last_i = 0
+
+
+
+
+# PROCURANDO OS HEADERS DOS FRAMES: ==> frames(bytearray(arquivo))
+
+last_frame_found = 0
 bytes_per_frame = []
-for i in range(TOTALLENGHT - 1):
+frame_indexes = [] #FUNÇÃO RETORNA ISSO AQUI
+for i in range(100000):
     if 0xff == bytearrayarquivo[i]:
-        if 0xf0 <= bytearrayarquivo[i+1] or 0xe0 <= bytearrayarquivo[i+1]:
-            # print("\n")
-            # print(hex(bytearrayarquivo[i-1]), hex(bytearrayarquivo[i]), hex(bytearrayarquivo[i+1]))
-            # print(f"Começo do Frame: {i}")
-            bytes_per_frame.append(i-last_i)
-            # print(f"Número de Bytes nesse frame: {i-last_i}")
-            last_i = i
+        if (0xf0 <= bytearrayarquivo[i+1] or 0xe0 <= bytearrayarquivo[i+1]) and 0xff > bytearrayarquivo[i+1]:
+            print("\n")
+            print(hex(bytearrayarquivo[i-1]), hex(bytearrayarquivo[i]), hex(bytearrayarquivo[i+1]))
+            print(f"Começo do Frame: {i}")
+            bytes_per_frame.append(i-last_frame_found)
+            frame_indexes.append(i)
+            print(f"Número de Bytes no último frame: {i-last_frame_found}")
+            last_frame_found = i
+
+for i in range(len(frame_indexes) - 1):
+    print(f"{frame_indexes[i]}, {bytes_per_frame[i + 1]}") # Melhorar esse cara. No momento o índice I tem a localização do frame em um array e o tamanho do frame anterior no outro array.
             
-# for coordenada in bytes_per_frame:
-#     print(coordenada)
+# for frame_length in bytes_per_frame:
+#     print(frame_length)
 
+print(f"Localização do primeiro frame: {frame_indexes[0]}")
 
-# PROCURANDO O "XING":
+# PROCURANDO O "Xing": bitratetype(bytearray(arquivo))
+print(f"{frame_indexes[i]}, {bytes_per_frame[i]}")
+
 for i in range(TOTALLENGHT-3):
-    # print(i,bytearrayarquivo[i:i+4], sep=" - ")
-    if bytearrayarquivo[i] == 0x58:
-        if bytearrayarquivo[i+1] == 0x69:
-            if bytearrayarquivo[i+2] == 0x6E:
-                if bytearrayarquivo[i+3] == 0x67:
-                    print(i)
+    if bytearrayarquivo[i:i+4] == bytearray(b'Xing'):
+        print(f"Localização do Xing: {i}")
+        break
         
+print(len(frame_indexes))
 '''
 print(f"Primeiros 100 bytes: {bytearrayarquivo[::]}")
 '''
@@ -92,7 +103,7 @@ print(f"Primeiros 100 bytes: {bytearrayarquivo[::]}")
 
 ####################################################
 '''
-LÊ AS INFORMAÇÕES PELO HEADER DE CIMA (TRABALHAR NISSO)
+LÊ AS INFORMAÇÕES PELAS TAGSv2 (TODO)
 DATACOORD = []
 BIT = 0
 while bytearrayarquivo[BIT] != FRAMESTART: #procura as coordenadas começo e fim dos bytes b'0x0'b'0x0'b'0x0', usados para delimitar informações, até encontrar um bit b'0xFF'.

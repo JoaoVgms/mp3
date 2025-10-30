@@ -1,12 +1,12 @@
-https://iamkate.com/code/binary-file-viewer/
+https://iamkate.com/code/binary-file-viewer/ <== Visualizar Bytes
 
-https://teslabs.com/openplayer/docs/docs/specs/mp3_structure.pdf
+https://teslabs.com/openplayer/docs/docs/specs/mp3_structure.pdf <== TAGv2 e Primeiro Frame
 
-https://mp3converters.io/pt/youtube-para-mp3/
+https://mp3converters.io/pt/youtube-para-mp3/ <== Converter vídeo do youtube para .mp3 (ACHAR FONTE MELHOR DE MP3) 
 
-https://www.datavoyage.com/mpgscript/mpeghdr.htm
+https://www.datavoyage.com/mpgscript/mpeghdr.htm <== Mais fontes de TAGv2 e Headers
 
-https://www.mp3-tech.org/programmer/frame_header.html
+https://www.mp3-tech.org/programmer/frame_header.html <== Mais fontes de Headers
 
-https://id3.org/id3v2.4.0-structure
+https://id3.org/id3v2.4.0-structure <== Documentação original do ID3.
 
