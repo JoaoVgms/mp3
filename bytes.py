@@ -8,6 +8,59 @@ with open(localfile, "rb") as arquivo:
 FRAMESTART = 0xff
 TOTALLENGHT = len(bytearrayarquivo)
 
+  
+counter = 0
+infoplaceholder = ''
+info = []
+titles = ['Título: ', 'Artista: ', 'Álbum: ','Comentário: ', 'Ano: ']
+j = 0
+
+for i in range(125): #Conta os últimos 128 bytes
+    if bytearrayarquivo[TOTALLENGHT - 125 + i] != 0: #Caso qualquer um desses bytes seja diferente de 0...
+        if counter == 0: #identifica se é o primeiro byte do bloco
+            counter += 1 #incrementa o contador em 1 para cada byte encontrado.
+        infoplaceholder += chr(bytearrayarquivo[TOTALLENGHT - 125 + i]) #Cria a string de informações com cada byte do bloco de informações.
+    else:
+        if counter != 0:
+            info.append(infoplaceholder) #Adiciona a informação encontrada ao array de controle
+            infoplaceholder = '' #Resete a string
+            counter = 0 #reseta a quantidade de bytes encontrados
+        
+for index, data in enumerate(info): #Printa as informações do array de controle.
+    if (index == 4): #Verifica se há um bloco de comentários. Caso não haja, pula o indice 3, que nomeia os comentários.
+        print(titles[index], data, "\n")
+    else:
+        if(index > 2):
+            print(titles[index + 1], data, "\n")
+        else:
+            print(titles[index], data, "\n")
+   
+# PROCURANDO OS HEADERS DOS FRAMES: 
+last_i = 0
+bytes_per_frame = []
+for i in range(TOTALLENGHT - 1):
+    if 0xff == bytearrayarquivo[i]:
+        if 0xf0 <= bytearrayarquivo[i+1] or 0xe0 <= bytearrayarquivo[i+1]:
+            # print("\n")
+            # print(hex(bytearrayarquivo[i-1]), hex(bytearrayarquivo[i]), hex(bytearrayarquivo[i+1]))
+            # print(f"Começo do Frame: {i}")
+            bytes_per_frame.append(i-last_i)
+            # print(f"Número de Bytes nesse frame: {i-last_i}")
+            last_i = i
+            
+# for coordenada in bytes_per_frame:
+#     print(coordenada)
+
+
+# PROCURANDO O "XING":
+for i in range(TOTALLENGHT-3):
+    # print(i,bytearrayarquivo[i:i+4], sep=" - ")
+    if bytearrayarquivo[i] == 0x58:
+        if bytearrayarquivo[i+1] == 0x69:
+            if bytearrayarquivo[i+2] == 0x6E:
+                if bytearrayarquivo[i+3] == 0x67:
+                    print(i)
+        
 '''
 print(f"Primeiros 100 bytes: {bytearrayarquivo[::]}")
 '''
@@ -58,34 +111,6 @@ for n in range(LENDATACOORD):
     print(bytearrayarquivo[DATACOORD[n - 1]:DATACOORD[n]])
 '''
 ###################################################
-     
-counter = 0
-INFOPLACEHOLDER = ''
-info = []
-titles = ['Título: ', 'Artista: ', 'Álbum: ','Comentário: ', 'Ano: ']
-j = 0
-
-for i in range(125): #Conta os últimos 128 bytes
-    if bytearrayarquivo[TOTALLENGHT - 125 + i] != 0: #Caso qualquer um desses bytes seja diferente de 0...
-        if counter == 0: #identifica se é o primeiro byte do bloco
-            counter += 1 #incrementa o contador em 1 para cada byte encontrado.
-        INFOPLACEHOLDER += chr(bytearrayarquivo[TOTALLENGHT - 125 + i]) #Cria a string de informações com cada byte do bloco de informações.
-    else:
-        if counter != 0:
-            info.append(INFOPLACEHOLDER) #Adiciona a informação encontrada ao array de controle
-            INFOPLACEHOLDER = '' #Resete a string
-            counter = 0 #reseta a quantidade de bytes encontrados
-        
-for index, data in enumerate(info): #Printa as informações do array de controle.
-    if (index == 4): #Verifica se há um bloco de comentários. Caso não haja, pula o indice 3, que nomeia os comentários.
-        print(titles[index], data, "\n")
-    else:
-        if(index > 2):
-            print(titles[index + 1], data, "\n")
-        else:
-            print(titles[index], data, "\n")
-    
-    
 
 
 
