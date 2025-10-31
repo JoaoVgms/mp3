@@ -10,3 +10,7 @@ https://www.mp3-tech.org/programmer/frame_header.html <== Mais fontes de Headers
 
 https://id3.org/id3v2.4.0-structure <== Documentação original do ID3.
 
+https://www.mp3-tech.org/programmer/docs/mp3_theory.pdf <== Artigo sobre .mp3, desde o header IDE até descompressão.
+
+https://cs.stanford.edu/people/eroberts/courses/soco/projects/data-compression/lossy/mp3/concept.htm <== Postagem de Stanford sobre o tema. 
+
